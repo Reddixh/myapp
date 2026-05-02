@@ -44,7 +44,7 @@
 
 @if($unpaidCount > 0)
 <div class="alert-box">
-    🚨 You have <strong>{{ $unpaidCount }} unpaid bill(s)</strong> totalling
+     You have <strong>{{ $unpaidCount }} unpaid bill(s)</strong> totalling
     <strong>TZS {{ number_format($unpaidTotal) }}</strong>.
     Clear all payments to proceed with clearance.
 </div>

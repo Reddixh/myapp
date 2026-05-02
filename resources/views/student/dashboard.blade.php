@@ -39,6 +39,27 @@
     .dept-date { font-size: 11px; color: #94a3b8; }
     .alert-box { background: #fef9c3; border: 1px solid #fde047; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #92400e; }
 </style>
+{{-- NOTIFICATIONS --}}
+@php
+    $notifications = \App\Models\StudentNotification::where('user_id', Auth::id())
+        ->where('is_read', false)
+        ->latest()
+        ->get();
+@endphp
+
+@foreach($notifications as $notif)
+<div style="background:{{ $notif->type === 'success' ? '#dcfce7' : ($notif->type === 'danger' ? '#fee2e2' : ($notif->type === 'warning' ? '#fef9c3' : '#E6F1FB')) }};
+     border:1px solid {{ $notif->type === 'success' ? '#86efac' : ($notif->type === 'danger' ? '#fca5a5' : ($notif->type === 'warning' ? '#fde047' : '#B5D4F4')) }};
+     border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;
+     color:{{ $notif->type === 'success' ? '#166534' : ($notif->type === 'danger' ? '#991b1b' : ($notif->type === 'warning' ? '#92400e' : '#0C447C')) }}">
+    <div style="font-weight:700;margin-bottom:3px">{{ $notif->title }}</div>
+    <div>{{ $notif->message }}</div>
+    <div style="font-size:11px;opacity:0.7;margin-top:4px">
+        From: {{ $notif->from }} — {{ $notif->created_at->diffForHumans() }}
+    </div>
+</div>
+@php $notif->update(['is_read' => true]); @endphp
+@endforeach
 
 {{-- ALERT if pending penalties --}}
 @if($penalties > 0)

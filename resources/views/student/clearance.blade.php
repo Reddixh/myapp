@@ -44,6 +44,15 @@
     .alert-box { background: #fef9c3; border: 1px solid #fde047; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #92400e; }
     .success-box { background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #166534; }
     .error-box { background: #fee2e2; border: 1px solid #fca5a5; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #991b1b; }
+    .download-section { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .download-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; }
+    .download-card.disabled { opacity: 0.5; cursor: not-allowed; }
+    .download-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .download-info { flex: 1; }
+    .download-title { font-size: 14px; font-weight: 600; color: #1e293b; }
+    .download-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .btn-download { background: #185FA5; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; flex-shrink: 0; }
+    .btn-download.locked { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 </style>
 
 <div class="page-title">My Clearance</div>
@@ -56,6 +65,38 @@
 @if(session('error'))
     <div class="error-box">❌ {{ session('error') }}</div>
 @endif
+{{-- DOWNLOAD SECTION --}}
+<div class="download-section">
+    {{-- Clearance Ticket --}}
+    <div class="download-card {{ $cleared < $departments->count() ? 'disabled' : '' }}">
+        <div class="download-icon" style="background:#E6F1FB">📄</div>
+        <div class="download-info">
+            <div class="download-title">Clearance Ticket</div>
+            <div class="download-sub">
+                @if($cleared < $departments->count())
+                    Complete all departments to unlock
+                @else
+                    Digitally signed — ready to download
+                @endif
+            </div>
+        </div>
+        @if($cleared < $departments->count())
+            <span class="btn-download locked">🔒 Locked</span>
+        @else
+            <a href="{{ route('clearance.download') }}" class="btn-download">⬇ Download</a>
+        @endif
+    </div>
+
+    {{-- Financial Statement --}}
+    <div class="download-card">
+        <div class="download-icon" style="background:#fef9c3">💰</div>
+        <div class="download-info">
+            <div class="download-title">Financial Statement</div>
+            <div class="download-sub">All transactions including paid and unpaid</div>
+        </div>
+        <a href="{{ route('financial.statement') }}" class="btn-download" style="background:#1B6B45">⬇ View</a>
+    </div>
+</div>
 
 @if($penalties > 0)
 <div class="alert-box">

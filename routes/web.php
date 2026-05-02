@@ -7,12 +7,16 @@ use App\Http\Controllers\Staff\StaffAuthController;
 use App\Http\Controllers\Staff\LibrarianController;
 
 // ─── Student Auth ─────────────────────────────
-Route::get('/', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/', function() { return view('welcome'); })->name('home');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot.password');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot.submit');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/clearance/download', [StudentController::class, 'downloadClearance'])->name('clearance.download');
+Route::get('/financial-statement', [StudentController::class, 'financialStatement'])->name('financial.statement');
+Route::post('/notifications/read-all', [StudentController::class, 'markNotifsRead'])->name('notifs.read');
+Route::get('/notifications', [StudentController::class, 'allNotifications'])->name('notifs.all');
 
 // ─── Student Pages ─────────────────────────────
 Route::middleware(['auth'])->group(function () {
@@ -29,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/staff/login', [StaffAuthController::class, 'showLogin'])->name('staff.login');
 Route::post('/staff/login', [StaffAuthController::class, 'login'])->name('staff.login.submit');
 Route::get('/staff/logout', [StaffAuthController::class, 'logout'])->name('staff.logout');
+Route::get('/staff/books', [LibrarianController::class, 'allBooks'])->name('staff.books');
+Route::post('/staff/books/{userId}', [LibrarianController::class, 'addBook'])->name('staff.book.add');
+Route::post('/staff/books/return/{bookId}', [LibrarianController::class, 'returnBook'])->name('staff.book.return');
 
 // ─── Librarian Panel ───────────────────────────
 Route::middleware(['auth', 'staff:librarian'])->group(function () {

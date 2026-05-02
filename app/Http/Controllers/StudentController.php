@@ -126,4 +126,52 @@ class StudentController extends Controller
         $user = Auth::user();
         return view('student.profile', compact('user'));
     }
+
+    public function downloadClearance()
+  {
+    $user        = Auth::user();
+    $departments = Department::orderBy('order')->get();
+    $clearances  = Clearance::where('user_id', $user->id)->get()->keyBy('department_id');
+    $allCleared  = $clearances->where('status', 'cleared')->count() === $departments->count();
+
+    return view('student.clearance-ticket', compact(
+        'user', 'departments', 'clearances', 'allCleared'
+    ));
+   }
+
+    public function financialStatement()
+   {
+    $user      = Auth::user();
+    $penalties = Penalty::with('controlNumber', 'department')
+                    ->where('user_id', $user->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+    $totalPaid    = $penalties->where('status', 'paid')->sum('amount');
+    $totalUnpaid  = $penalties->where('status', 'unpaid')->sum('amount');
+    $totalAmount  = $penalties->sum('amount');
+
+    return view('student.financial-statement', compact(
+        'user', 'penalties',
+        'totalPaid', 'totalUnpaid', 'totalAmount'
+    ));
+    }
+
+    public function markNotifsRead()
+{
+    \App\Models\StudentNotification::where('user_id', Auth::id())
+        ->where('is_read', false)
+        ->update(['is_read' => true]);
+
+    return response()->json(['success' => true]);
+}
+
+public function allNotifications()
+{
+    $notifications = \App\Models\StudentNotification::where('user_id', Auth::id())
+        ->latest()
+        ->paginate(20);
+
+    return view('student.notifications', compact('notifications'));
+}
 }

@@ -1,14 +1,28 @@
 <?php
 
+Route::get('/debug-auth', function() {
+    if (auth()->check()) {
+        return response()->json([
+            'logged_in' => true,
+            'name'      => auth()->user()->name,
+            'role'      => auth()->user()->role,
+            'email'     => auth()->user()->email,
+        ]);
+    }
+    return response()->json(['logged_in' => false]);
+});
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Staff\StaffAuthController;
 use App\Http\Controllers\Staff\LibrarianController;
+use App\Http\Controllers\Staff\DeanController;
+use App\Http\Controllers\Staff\ITController;
 
 // ─── Student Auth ─────────────────────────────
 Route::get('/', function() { return view('welcome'); })->name('home');
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login.form');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot.password');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot.submit');
@@ -45,4 +59,32 @@ Route::middleware(['auth', 'staff:librarian'])->group(function () {
     Route::post('/staff/reject/{userId}', [LibrarianController::class, 'reject'])->name('staff.reject');
     Route::post('/staff/penalty/{userId}', [LibrarianController::class, 'addPenalty'])->name('staff.penalty');
     Route::post('/staff/control-number/{penaltyId}', [LibrarianController::class, 'issueControlNumber'])->name('staff.control');
+    Route::get('/staff/books', [LibrarianController::class, 'allBooks'])->name('staff.books');
+    Route::post('/staff/books/{userId}', [LibrarianController::class, 'addBook'])->name('staff.book.add');
+    Route::post('/staff/books/return/{bookId}', [LibrarianController::class, 'returnBook'])->name('staff.book.return');
+}); // ← Make sure this closing bracket is here!
+
+// ─── Dean Panel ────────────────────────────────
+Route::middleware(['auth', 'staff:dean'])->group(function () {
+    Route::get('/dean/dashboard', [DeanController::class, 'dashboard'])->name('dean.dashboard');
+    Route::get('/dean/student/{userId}', [DeanController::class, 'showStudent'])->name('dean.student');
+    Route::post('/dean/approve/{userId}', [DeanController::class, 'approve'])->name('dean.approve');
+    Route::post('/dean/reject/{userId}', [DeanController::class, 'reject'])->name('dean.reject');
+    Route::post('/dean/penalty/{userId}', [DeanController::class, 'addPenalty'])->name('dean.penalty');
+    Route::post('/dean/conduct/{userId}', [DeanController::class, 'addConductRecord'])->name('dean.conduct');
+    Route::post('/dean/conduct/resolve/{recordId}', [DeanController::class, 'resolveRecord'])->name('dean.resolve');
+    Route::get('/dean/records', [DeanController::class, 'allRecords'])->name('dean.records');
+});
+
+// ─── IT Panel ──────────────────────────────────
+Route::middleware(['auth', 'staff:it'])->group(function () {
+    Route::get('/it/dashboard', [ITController::class, 'dashboard'])->name('it.dashboard');
+    Route::get('/it/student/{userId}', [ITController::class, 'showStudent'])->name('it.student');
+    Route::post('/it/approve/{userId}', [ITController::class, 'approve'])->name('it.approve');
+    Route::post('/it/reject/{userId}', [ITController::class, 'reject'])->name('it.reject');
+    Route::post('/it/penalty/{userId}', [ITController::class, 'addPenalty'])->name('it.penalty');
+    Route::post('/it/equipment/{userId}', [ITController::class, 'addEquipment'])->name('it.equipment.add');
+    Route::post('/it/equipment/return/{equipmentId}', [ITController::class, 'returnEquipment'])->name('it.equipment.return');
+    Route::post('/it/equipment/lost/{equipmentId}', [ITController::class, 'markLost'])->name('it.equipment.lost');
+    Route::get('/it/equipment', [ITController::class, 'allEquipment'])->name('it.equipment');
 });

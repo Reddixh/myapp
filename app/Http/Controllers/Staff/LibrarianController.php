@@ -164,35 +164,37 @@ class LibrarianController extends Controller
     }
 
     public function addPenalty(Request $request, $userId)
-    {
-        $request->validate([
-            'name'     => 'required|string',
-            'type'     => 'required|in:penalty,outstanding_bill',
-            'amount'   => 'required|numeric|min:1',
-            'due_date' => 'nullable|date',
-        ]);
+{
+    $request->validate([
+        'name'     => 'required|string',
+        'type'     => 'required|in:penalty,outstanding_bill',
+        'amount'   => 'required|numeric|min:1',
+        'due_date' => 'nullable|date',
+    ]);
 
-        $dept = $this->getDepartment();
-        Penalty::create([
-            'user_id'       => $userId,
-            'department_id' => $dept->id,
-            'name'          => $request->name,
-            'type'          => $request->type,
-            'amount'        => $request->amount,
-            'status'        => 'unpaid',
-            'due_date'      => $request->due_date,
-        ]);
+    $dept = $this->getDepartment();
 
-        $this->notify(
-            $userId,
-            '⚠️ New Penalty Added by Library',
-            'The library has added a new penalty: ' . $request->name . ' of TZS ' . number_format($request->amount) . '. Please visit the library or pay using the control number provided.',
-            'warning'
-        );
+    Penalty::create([
+        'user_id'       => $userId,
+        'department_id' => $dept->id,
+        'name'          => $request->name,
+        'type'          => $request->type,
+        'amount'        => $request->amount,
+        'status'        => 'unpaid',
+        'due_date'      => $request->due_date,
+    ]);
 
-        return redirect()->route('staff.student', $userId)
-            ->with('success', 'Penalty added and student notified!');
-    }
+    // Notify student
+    $this->notify(
+        $userId,
+        '⚠️ New ' . ($request->type === 'penalty' ? 'Penalty' : 'Outstanding Bill') . ' Added',
+        'The Library has added a new charge: "' . $request->name . '" of TZS ' . number_format($request->amount) . '. Please visit the library or use your control number to pay.',
+        'warning'
+    );
+
+    return redirect()->route('staff.student', $userId)
+        ->with('success', 'Penalty added to student account');
+}
 
     public function addBook(Request $request, $userId)
     {

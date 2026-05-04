@@ -127,24 +127,6 @@
         }
         .sidebar.hidden { transform: translateX(-230px); }
 
-        /* SIDEBAR LOGO AREA */
-        .sidebar-header {
-            padding: 12px 18px 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 8px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .sidebar-avatar {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: linear-gradient(135deg, #fff, #E6F1FB);
-            display: flex; align-items: center; justify-content: center;
-            color: #0C447C; font-size: 14px; font-weight: 700;
-            border: 2px solid rgba(255,255,255,0.3);
-            flex-shrink: 0;
-        }
-        .sidebar-user-name { font-size: 13px; font-weight: 700; color: #fff; }
-        .sidebar-user-reg { font-size: 11px; color: #B5D4F4; margin-top: 2px; }
-
         .nav-section {
             padding: 10px 18px 4px;
             font-size: 10px; color: rgba(255,255,255,0.5);
@@ -227,17 +209,6 @@
 {{-- SIDEBAR --}}
 <div class="sidebar" id="sidebar">
 
-    {{-- USER INFO IN SIDEBAR --}}
-    <div class="sidebar-header">
-        <div class="sidebar-avatar">
-            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}{{ strtoupper(substr(Auth::user()->name, strrpos(Auth::user()->name, ' ') + 1, 1)) }}
-        </div>
-        <div>
-            <div class="sidebar-user-name">{{ Auth::user()->name }}</div>
-            <div class="sidebar-user-reg">{{ Auth::user()->reg_number }}</div>
-        </div>
-    </div>
-
     <div class="nav-section">Main</div>
     <a href="/dashboard" class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}">
         🏠 Dashboard
@@ -256,9 +227,7 @@
             <span class="nav-badge">{{ $unreadCount }}</span>
         @endif
     </a>
-    <a href="/request-control-number" class="nav-item {{ request()->is('request-control-number') ? 'active' : '' }}">
-        📋 Request Control No.
-    </a>
+    
     <hr class="nav-divider">
     <div class="nav-section">Documents</div>
     <a href="/clearance" class="nav-item {{ request()->is('clearance') ? 'active' : '' }}">

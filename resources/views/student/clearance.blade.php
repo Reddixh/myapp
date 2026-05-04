@@ -60,6 +60,11 @@
 
 @if(session('success'))
     <div class="success-box">✅ {{ session('success') }}</div>
+    @if(session('warning'))
+    <div style="background:#fef9c3;border:1px solid #fde047;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#92400e;">
+        ⚠️ {{ session('warning') }}
+    </div>
+@endif
 @endif
 
 @if(session('error'))

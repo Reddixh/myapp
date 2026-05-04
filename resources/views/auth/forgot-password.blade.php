@@ -78,7 +78,7 @@
                 <button type="submit" class="btn">Send Reset Link →</button>
             </form>
 
-            <a href="{{ route('login.form') }}" class="student-link">← Back to Login</a>
+            <a href="{{ route('login') }}" class="student-link">← Back to Login</a>
         </div>
     </div>
 </div>

@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'staff' => \App\Http\Middleware\StaffMiddleware::class,
         ]);
+        $middleware->redirectGuestsTo('/login');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

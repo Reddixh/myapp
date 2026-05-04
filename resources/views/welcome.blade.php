@@ -236,7 +236,7 @@
         <a href="#faq" class="nav-link">Contact</a>
     </div>
     <div class="navbar-btns">
-        <a href="{{ route('login.form') }}" class="btn-student">🎓 Login</a>
+        <a href="{{ route('login') }}" class="btn-student">🎓 Login</a>
     </div>
 </nav>
 
@@ -254,7 +254,7 @@
             anytime, anywhere.
         </p>
         <div class="hero-btns">
-            <a href="{{ route('login.form') }}" class="btn-hero-primary">🎓 Get Started</a>
+            <a href="{{ route('login') }}" class="btn-hero-primary">🎓 Get Started</a>
             <a href="#how" class="btn-hero-secondary">Learn More →</a>
         </div>
     </div>
